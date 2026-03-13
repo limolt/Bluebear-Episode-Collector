@@ -76,7 +76,8 @@
         const episodesRef = ref(database, 'episodes');
 
         // 초기 설정
-        const themes = [
+// 100개 테마 리스트 (가볍고 쓰기 쉬운 버전)
+const themes = [
   "습기", "비오는날", "맛집", "커피", "새벽", "소파", "이불", "삼각김밥",
   "편의점", "야식", "샤워", "세탁기", "청소기", "우산", "엘리베이터", "지하철",
   "택배", "배달음식", "냉장고", "전자레인지", "핸드폰", "충전기", "이어폰",
@@ -90,6 +91,8 @@
   "버스", "지하철역", "엘리베이터고장", "비상계단", "비오는날우산없음", "잠옷",
   "슬리퍼", "양말", "목욕", "뜨거운물", "찬물", "샤워기", "타월", "헤어드라이어",
   "면도크림", "향수", "탈취제", "마스크", "손소독제", "체온계", "해열제"
+];
+
 // 랜덤 주제 선택
 const randomTheme = themes[Math.floor(Math.random() * themes.length)];
         
@@ -138,6 +141,7 @@ const randomTheme = themes[Math.floor(Math.random() * themes.length)];
     </script>
 </body>
 </html>
+
 
 
 
