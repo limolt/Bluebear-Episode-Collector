@@ -95,17 +95,70 @@ const firebaseConfig = {
 
     <script>
 <script>
-  // 주제 바로 실행 (지연 없이 바로)
-  const themes = ["습기", "비오는날", "맛집", "커피", "새벽", "소파", "이불", "달두개"]; // 테스트용으로 줄여봄
-  const randomTheme = themes[Math.floor(Math.random() * themes.length)];
-  const themeElement = document.getElementById("todayTheme");
-  if (themeElement) {
-    themeElement.textContent = randomTheme;
-    console.log("주제 강제 설정 성공: " + randomTheme);
-  } else {
-    console.log("todayTheme 요소 못 찾음");
-  }
-      console.log("스크립트가 여기까지 왔어!");  // 이 로그만 추가
-</script>
+  <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyDa49Z0CeXJS4YjVkhhp1Qissnn57tGbEs",
+            authDomain: "bluebearepisodescollect.firebaseapp.com",
+            databaseURL: "https://bluebearepisodescollect-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bluebearepisodescollect",
+            storageBucket: "bluebearepisodescollect.firebasestorage.app",
+            messagingSenderId: "783220074897",
+            appId: "1:783220074897:web:044242741babba63949230",
+            measurementId: "G-033FX9FVQH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const episodesRef = ref(database, 'episodes');
+
+        // DOM이 로드된 후 실행되도록 보장
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. 주제 랜덤 설정
+            const themes = ["습기", "비오는날", "맛집", "커피", "새벽", "소파", "이불", "달두개"];
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            const themeElement = document.getElementById("todayTheme");
+            
+            if (themeElement) {
+                themeElement.textContent = randomTheme;
+                console.log("주제 설정 완료: " + randomTheme);
+            }
+
+            // 2. 에피소드 제출 로직 (필요시 추가 구현)
+            const form = document.getElementById('episodeForm');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const content = document.getElementById('episode').value;
+                if(content.trim() === "") return;
+                
+                push(episodesRef, {
+                    content: content,
+                    theme: randomTheme,
+                    timestamp: Date.now()
+                }).then(() => {
+                    document.getElementById('episode').value = "";
+                    alert("베어의 기억에 저장되었습니다! 🐻");
+                });
+            });
+
+            // 3. 관리자 컨트롤 표시
+            const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
+            if (isAdmin) {
+                document.getElementById('adminControls').style.display = 'block';
+            }
+        });
+
+        // 전역 함수 등록 (관리자용 삭제 버튼 등)
+        window.clearAllEpisodes = () => {
+            if(confirm("정말로 모든 데이터를 삭제하시겠습니까?")) {
+                remove(episodesRef);
+            }
+        };
+    </script>
+</body>
+
 
 
