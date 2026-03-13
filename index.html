@@ -105,22 +105,29 @@ const firebaseConfig = {
         ];
 
        let episodes = [];  // Firebase에서 실시간으로 채워짐 // 오늘의 주제 랜덤 선택
-        function setRandomTheme() {
-            const randomIndex = Math.floor(Math.random() * themes.length);
-            document.getElementById("todayTheme").textContent = themes[randomIndex];
-        }
+ // 오늘의 주제 랜덤 선택
+function setRandomTheme() {
+    const randomIndex = Math.floor(Math.random() * themes.length);
+    document.getElementById("todayTheme").textContent = themes[randomIndex];
+}
+
+// 페이지 로드 완료 후 주제 설정 (여기서 호출)
+document.addEventListener('DOMContentLoaded', () => {
+  setRandomTheme();
+  console.log("주제 설정 시도: ", document.getElementById("todayTheme").textContent || "빈 칸");
+});
 
 
 
         // Firebase에서 실시간으로 에피소드 불러오기 & 업데이트
-onValue(episodesRef, (snapshot) => {
-  const data = snapshot.val();
-  episodes = data ? Object.entries(data).map(([key, value]) => ({ id: key, ...value })) : [];
-  renderList();  // 목록 새로 그리기
+//onValue(episodesRef, (snapshot) => { ... }); 전체
+  //const data = snapshot.val();
+  //episodes = data ? Object.entries(data).map(([key, value]) => ({ id: key, ...value })) : [];
+  //renderList();  // 목록 새로 그리기
 });
 
 // 에피소드 제출 (submit 이벤트)
-document.getElementById("episodeForm").addEventListener("submit", function(e) {
+//document.getElementById("episodeForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const text = document.getElementById("episode").value.trim();
   
@@ -140,13 +147,13 @@ document.getElementById("episodeForm").addEventListener("submit", function(e) {
 });
 
 // 전체 삭제 함수 (관리자용) - Firebase로 변경
-function clearAllEpisodes() {
+//function clearAllEpisodes() {
   if (confirm("정말 모든 에피소드를 지울까요? 복구 불가예요!")) {
     remove(ref(database, 'episodes'));
     alert("모두 삭제됐어요.");
   }
 }
-function renderList() {
+//function renderList() {
   const list = document.getElementById("episodeList");
   list.innerHTML = "";
   episodes.slice().reverse().forEach((ep, index) => {
@@ -189,11 +196,8 @@ function renderList() {
     list.appendChild(li);
   });
 }
-// 페이지 로드 완료 후 주제 설정 (DOM 준비된 후 실행)
-document.addEventListener('DOMContentLoaded', () => {
-  setRandomTheme();
-  console.log("주제 설정 시도: ", document.getElementById("todayTheme").textContent); // 디버깅용
-});
+
+
 
 
 
