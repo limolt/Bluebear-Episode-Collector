@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블루베어 에피소드 수집소</title>
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; margin: 0; padding: 20px; background: #f8f0e8; color: #333; line-height: 1.6; }
+        h1 { color: #1e3a8a; text-align: center; }
+        .intro, .theme-box, .examples, .list-box { max-width: 700px; margin: 20px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .theme-box { background: #e0f2fe; text-align: center; }
+        form { max-width: 700px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; }
+        textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; min-height: 80px; }
+        button { background: #1e3a8a; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; width: 100%; }
+        button:hover { background: #0f2a6e; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 12px; background: #f8f8f8; margin: 8px 0; border-radius: 8px; border-left: 4px solid #1e3a8a; }
+        .example-item { background: #f0f9ff; padding: 10px; margin: 8px 0; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>🧸 블루베어 에피소드 수집소</h1>
+    
+    <div class="intro">
+        <h2>안녕하세요! 블루베어 스튜디오 대표 + 베어입니다 👋</h2>
+        <p>190cm 파란 테디베어가 갑자기 나타나서 함께 일하고 있어요.<br>
+        베어는 다른 별 출신이라 지구 장비를 못 만지지만, 아이디어와 힘쓰는 일은 최고죠 😂</p>
+    </div>
+
+    <!-- 오늘의 주제 -->
+    <div class="theme-box">
+        <h3>오늘의 주제: <span id="todayTheme" style="color:#1e3a8a; font-weight:bold;"></span></h3>
+        <p><strong>이 주제 안에서</strong> 재미있는 에피소드를 자유롭게 적어주세요!<br>
+        (예: 베어가 어떻게 반응했는지, 대표가 어떻게 대처했는지 등)</p>
+    </div>
+
+    <!-- 예시 에피소드 -->
+    <div class="examples">
+        <h3>이런 식으로 써주세요 (예시 5개)</h3>
+        <div class="example-item">• 베어가 잔뜩 축 쳐져서 일에 집중 못 하고 있어. 대표가 말을 걸자 습기 때문에 잔뜩 무거워진 인형털을 보여주며 “몸이 무겁다고...”</div>
+        <div class="example-item">• 베어가 “이게 커피라는 거냐” 하면서 잔뜩 토해내는 중… 컵이 손에 안 들어가서 결국 바닥에 엎음</div>
+        <div class="example-item">• 새벽 3시. 베어 혼잣말 “고향엔 달이 두 개였는데… 여기선 하나뿐이네…”</div>
+        <div class="example-item">• 대표가 “오늘 컨셉 회의하자” 했더니 베어가 “난 그냥 여기 누워있을게…” 하고 이불 속 파묻힘</div>
+        <div class="example-item">• 베어가 편의점 삼각김밥 포장 뜯으려다 결국 대표 손 빌림 “지구인은 왜 이렇게 작고 날카로운 걸 만드냐”</div>
+    </div>
+
+    <form id="episodeForm">
+        <label>짧은 에피소드 한 줄 (최대 200자)</label>
+        <textarea id="episode" placeholder="오늘의 주제에 맞춰서 자유롭게 적어주세요!"></textarea>
+        <button type="submit">에피소드 제출하기 🐻</button>
+    </form>
+
+    <!-- 제출된 목록 -->
+    <div class="list-box">
+        <h3>이미 제출된 에피소드들 (최신순)</h3>
+        <ul id="episodeList"></ul>
+    </div>
+
+    <script>
+        // 50개 키워드 풀 (랜덤으로 오늘의 주제 결정)
+        const themes = [
+            "습기", "비오는날", "맛집", "두쫀쿠", "불평", "습관", "커피", "편의점", "삼각김밥", 
+            "새벽", "고향", "달", "손크기", "장비", "아이디어", "매너리즘", "AI영상", "소파", 
+            "이불", "힘쓰기", "번쩍", "인간음식", "포장뜯기", "토해내기", "무거움", "축처짐", 
+            "달두개", "컨셉회의", "야식", "커피숍", "영상편집", "창의력", "적대감", "먹고살기", 
+            "190cm", "파란털", "다른별", "지구장비", "큰손발", "아이디어폭발", "소파넘어짐", 
+            "베어울음", "대표화", "영상촬영", "Higgsfield", "AI하이브리드", "실촬영", "컨텐츠", 
+            "성장", "불평하기", "편의점야식"
+        ];
+
+        // 오늘의 주제 랜덤 선택
+        function setRandomTheme() {
+            const randomIndex = Math.floor(Math.random() * themes.length);
+            document.getElementById("todayTheme").textContent = themes[randomIndex];
+        }
+
+        // localStorage에서 에피소드 불러오기
+        let episodes = JSON.parse(localStorage.getItem("episodes")) || [];
+
+        function renderList() {
+            const list = document.getElementById("episodeList");
+            list.innerHTML = "";
+            episodes.slice().reverse().forEach(ep => {
+                const li = document.createElement("li");
+                li.innerHTML = `<strong>${ep.date}</strong><br>${ep.text}`;
+                list.appendChild(li);
+            });
+        }
+
+        // 폼 제출
+        document.getElementById("episodeForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const text = document.getElementById("episode").value.trim();
+            
+            if (text === "") {
+                alert("에피소드를 입력해주세요!");
+                return;
+            }
+
+            const newEpisode = {
+                text: text,
+                date: new Date().toLocaleString("ko-KR")
+            };
+
+            episodes.push(newEpisode);
+            localStorage.setItem("episodes", JSON.stringify(episodes));
+            
+            document.getElementById("episode").value = "";
+            renderList();
+            
+            alert("✅ 에피소드가 저장됐어요! 감사합니다 🐻");
+        });
+
+        // 페이지 로드 시 실행
+        window.onload = function() {
+            setRandomTheme();
+            renderList();
+        };
+    </script>
+</body>
+</html>
