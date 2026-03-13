@@ -92,7 +92,9 @@ const firebaseConfig = {
     </button>
 </div>
     </div>
-
+window.addEventListener('load', () => {
+  setRandomTheme();
+});
     <script>
         // 50개 키워드 풀 (랜덤으로 오늘의 주제 결정)
         const themes = [
@@ -150,3 +152,11 @@ function clearAllEpisodes() {
 
 // renderList 함수는 그대로 두되, episodes 배열이 Firebase에서 오는 걸로 바뀜
 // (기존 renderList 안에 있는 forEach 부분은 그대로 유지하면 돼)
+// 페이지 로드될 때 오늘의 주제 랜덤으로 설정 + 목록 렌더링
+window.addEventListener('load', () => {
+  setRandomTheme();
+  // renderList()는 onValue 안에서 이미 자동 호출되니까 여기선 생략해도 OK
+  // 하지만 안전하게 한 번 더 호출해도 문제 없음
+  renderList();
+});
+
