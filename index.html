@@ -94,36 +94,27 @@ const firebaseConfig = {
     </div>
 
     <script>
-        // 50개 키워드 풀 (랜덤으로 오늘의 주제 결정)
-        const themes = [
-            "습기", "비오는날", "맛집", "두쫀쿠", "불평", "습관", "커피", "편의점", "삼각김밥", 
-            "새벽", "고향", "달", "손크기", "장비", "아이디어", "매너리즘", "AI영상", "소파", 
-            "이불", "힘쓰기", "번쩍", "인간음식", "포장뜯기", "토해내기", "무거움", "축처짐", 
-            "달두개", "컨셉회의", "야식", "커피숍", "영상편집", "창의력", "적대감", "먹고살기", 
-            "190cm", "파란털", "다른별", "지구장비", "큰손발", "아이디어폭발", "소파넘어짐",  
-            "성장", "불평하기", "편의점야식", "특수능력", "유행", "좋아하는 영화"
-        ];
+       // 50개 키워드 풀
+const themes = [
+  "습기", "비오는날", "맛집", "두쫀쿠", "불평", "습관", "커피", "편의점", "삼각김밥",
+  "새벽", "고향", "달", "손크기", "장비", "아이디어", "매너리즘", "AI영상", "소파",
+  "이불", "힘쓰기", "번쩍", "인간음식", "포장뜯기", "토해내기", "무거움", "축처짐",
+  "달두개", "컨셉회의", "야식", "커피숍", "영상편집", "창의력", "적대감", "먹고살기",
+  "190cm", "파란털", "다른별", "지구장비", "큰손발", "아이디어폭발", "소파넘어짐",
+  "성장", "불평하기", "편의점야식", "특수능력", "유행", "좋아하는 영화"
+];
 
-       let episodes = [];  // Firebase에서 실시간으로 채워짐 // 오늘의 주제 랜덤 선택
- // 오늘의 주제 랜덤 선택
-function setRandomTheme() {
-    const randomIndex = Math.floor(Math.random() * themes.length);
-    document.getElementById("todayTheme").textContent = themes[randomIndex];
-}
-
-// 페이지 로드 완료 후 주제 설정 (여기서 호출)
-// 주제 바로 여기서 설정 (가장 안전한 방법)
+// 주제 바로 여기서 설정 (가장 확실한 방법)
 setTimeout(() => {
   const randomIndex = Math.floor(Math.random() * themes.length);
   const themeElement = document.getElementById("todayTheme");
   if (themeElement) {
     themeElement.textContent = themes[randomIndex];
-    console.log("주제 설정 성공: " + themeElement.textContent);
+    console.log("주제 성공: " + themeElement.textContent);
   } else {
     console.log("todayTheme 못 찾음");
   }
 }, 1000);  // 1초 기다린 후 실행
-
 
 
         // Firebase에서 실시간으로 에피소드 불러오기 & 업데이트
@@ -203,6 +194,7 @@ setTimeout(() => {
     //list.appendChild(li);
   //});
 //}
+
 
 
 
