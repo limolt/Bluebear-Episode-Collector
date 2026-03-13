@@ -13,100 +13,115 @@
         .intro, .theme-box, .examples, .list-box { max-width: 700px; margin: 20px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .theme-box { background: #e0f2fe; text-align: center; }
         form { max-width: 700px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; }
-        textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; min-height: 80px; }
+        textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; min-height: 80px; box-sizing: border-box; }
         button { background: #1e3a8a; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; width: 100%; }
         button:hover { background: #0f2a6e; }
         ul { list-style: none; padding: 0; }
-        li { padding: 12px; background: #f8f8f8; margin: 8px 0; border-radius: 8px; border-left: 4px solid #1e3a8a; }
+        li { padding: 12px; background: #f8f8f8; margin: 8px 0; border-radius: 8px; border-left: 4px solid #1e3a8a; word-break: break-all; }
         .example-item { background: #f0f9ff; padding: 10px; margin: 8px 0; border-radius: 8px; }
     </style>
-<!-- Firebase SDK 추가 (Realtime Database용) -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+</head>
+<body>
+    <h1>🧸 블루베어 에피소드 수집소</h1>
+    
+    <div class="intro">
+        <h2>안녕하세요! 블루베어 스튜디오 대표 "J" + "베어"입니다 👋</h2>
+        <p>190cm 파란 테디베어가 갑자기 나타나서 함께 일하고 있어요.<br>
+        베어는 다른 별 출신이라 지구 장비를 못 만지지만, 아이디어와 힘쓰는 일은 최고죠 😂</p>
+        <p><strong>당신이 직접</strong> 베어의 반응을 짧게 써주세요! (최대 200자)</p>
+    </div>
 
-    // 1. Firebase 설정
-    const firebaseConfig = {
-        apiKey: "AIzaSyDa49Z0CeXJS4YjVkhhp1Qissnn57tGbEs",
-        authDomain: "bluebearepisodescollect.firebaseapp.com",
-        databaseURL: "https://bluebearepisodescollect-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "bluebearepisodescollect",
-        storageBucket: "bluebearepisodescollect.firebasestorage.app",
-        messagingSenderId: "783220074897",
-        appId: "1:783220074897:web:044242741babba63949230",
-        measurementId: "G-033FX9FVQH"
-    };
+    <div class="theme-box">
+        <h3>오늘의 주제: <span id="todayTheme" style="color:#1e3a8a; font-weight:bold;">로딩 중...</span></h3>
+    </div>
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    const episodesRef = ref(database, 'episodes');
+    <div class="examples">
+        <h3>이런 식으로 써주세요</h3>
+        <div class="example-item">• 베어가 편의점 삼각김밥 포장 뜯으려다 결국 J의 손 빌림 “지구인은 왜 이렇게 작고 날카로운 걸 만드냐”</div>
+    </div>
 
-    // 2. 전역 변수 설정 (랜덤 주제)
-    const themes = ["습기", "비오는날", "맛집", "커피", "새벽", "소파", "이불", "달두개"];
-    const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+    <form id="episodeForm">
+        <textarea id="episode" placeholder="오늘의 주제에 맞춰서 자유롭게 적어주세요!"></textarea>
+        <button type="submit">에피소드 제출하기 🐻</button>
+    </form>
 
-    // DOM 로드 후 실행
-    document.addEventListener('DOMContentLoaded', () => {
-        // 주제 UI 반영
-        const themeElement = document.getElementById("todayTheme");
-        if (themeElement) {
-            themeElement.textContent = randomTheme;
-        }
+    <div class="list-box">
+        <h3>최신 에피소드</h3>
+        <ul id="episodeList"></ul>
+        <div id="adminControls" style="display:none; margin-top:20px; text-align:center;">
+            <button id="clearBtn" style="background:red;">모든 에피소드 삭제 (관리자)</button>
+        </div>
+    </div>
 
-        // 관리자 권한 체크 및 UI 표시
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDa49Z0CeXJS4YjVkhhp1Qissnn57tGbEs",
+            authDomain: "bluebearepisodescollect.firebaseapp.com",
+            databaseURL: "https://bluebearepisodescollect-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bluebearepisodescollect",
+            storageBucket: "bluebearepisodescollect.firebasestorage.app",
+            messagingSenderId: "783220074897",
+            appId: "1:783220074897:web:044242741babba63949230",
+            measurementId: "G-033FX9FVQH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const episodesRef = ref(database, 'episodes');
+
+        // 초기 설정
+        const themes = ["습기", "비오는날", "맛집", "커피", "새벽", "소파", "이불", "달두개"];
+        const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+        
+        // 1. 주제 표시
+        document.getElementById("todayTheme").textContent = randomTheme;
+
+        // 2. 관리자 모드 활성화
         const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
         if (isAdmin) {
-            const adminUI = document.getElementById('adminControls');
-            if(adminUI) adminUI.style.display = 'block';
+            document.getElementById('adminControls').style.display = 'block';
+            document.getElementById('clearBtn').addEventListener('click', () => {
+                if(confirm("전체 삭제하시겠습니까?")) remove(episodesRef);
+            });
         }
 
-        // 에피소드 리스트 실시간 불러오기 (onValue 추가)
-        const listElement = document.getElementById('episodeList');
-        onValue(episodesRef, (snapshot) => {
-            listElement.innerHTML = ""; // 초기화
-            const data = snapshot.val();
-            if (data) {
-                // 최신순 정렬을 위해 배열로 변환 후 reverse
-                Object.values(data).reverse().forEach(item => {
-                    const li = document.createElement('li');
-                    li.textContent = `[${item.theme}] ${item.content}`;
-                    listElement.appendChild(li);
-                });
-            }
-        });
-
-        // 폼 제출 로직
-        const form = document.getElementById('episodeForm');
-        form.addEventListener('submit', (e) => {
+        // 3. 에피소드 제출
+        document.getElementById('episodeForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const textarea = document.getElementById('episode');
-            const content = textarea.value.trim();
-            
-            if(!content) {
-                alert("내용을 입력해주세요.");
-                return;
-            }
+            const el = document.getElementById('episode');
+            const content = el.value.trim();
+            if(!content) return alert("내용을 입력하세요.");
 
             push(episodesRef, {
-                content: content,
+                content,
                 theme: randomTheme,
                 timestamp: Date.now()
             }).then(() => {
-                textarea.value = "";
-                alert("베어의 기억에 저장되었습니다! 🐻");
-            }).catch((err) => {
-                console.error("데이터 저장 실패:", err);
+                el.value = "";
+                alert("저장 완료! 🐻");
             });
         });
-    });
 
-    // 관리자용 삭제 함수 전역 등록
-    window.clearAllEpisodes = () => {
-        if(confirm("정말로 모든 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
-            remove(episodesRef).then(() => alert("전체 삭제 완료"));
-        }
-    };
-</script>
+        // 4. 리스트 실시간 업데이트
+        onValue(episodesRef, (snapshot) => {
+            const list = document.getElementById('episodeList');
+            list.innerHTML = "";
+            const data = snapshot.val();
+            if (data) {
+                Object.values(data).reverse().forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `[${item.theme}] ${item.content}`;
+                    list.appendChild(li);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
 
 
 
