@@ -126,25 +126,25 @@ document.addEventListener('DOMContentLoaded', () => {
 //   renderList(); // 목록 새로 그리기
 // });
 
-// 에피소드 제출 (submit 이벤트)
-//document.getElementById("episodeForm").addEventListener("submit", function(e) {
-  //e.preventDefault();
-  //const text = document.getElementById("episode").value.trim();
+/*
+ // 에피소드 제출 (submit 이벤트)
+ document.getElementById("episodeForm").addEventListener("submit", function(e) {
+   e.preventDefault();
+   const text = document.getElementById("episode").value.trim();
   
-//  if (text === "") {
-  //  alert("에피소드를 입력해주세요!");
-    //return;
-  //}
-
-  // Firebase에 새 에피소드 추가
-  //push(episodesRef, {
-    //text: text,
-    //date: new Date().toLocaleString("ko-KR")
-  //});
-
-  document.getElementById("episode").value = "";
-  alert("✅ 에피소드가 저장됐어요! 모든 사람이 볼 수 있어요 🐻");
-});
+   if (text === "") {
+     alert("에피소드를 입력해주세요!");
+     return;
+   }
+   // Firebase에 새 에피소드 추가
+   push(episodesRef, {
+     text: text,
+     date: new Date().toLocaleString("ko-KR")
+   });
+   document.getElementById("episode").value = "";
+   alert("✅ 에피소드가 저장됐어요! 모든 사람이 볼 수 있어요 🐻");
+ });
+*/
 
 // 전체 삭제 함수 (관리자용) - Firebase로 변경
 //function clearAllEpisodes() {
@@ -196,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //list.appendChild(li);
   //});
 //}
+
 
 
 
