@@ -1,3 +1,6 @@
+<script>
+  const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
+</script>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -60,6 +63,11 @@
     <div class="list-box">
         <h3>이미 제출된 에피소드들 (최신순)</h3>
         <ul id="episodeList"></ul>
+<div id="adminControls" style="display:none; margin-top:20px; text-align:center;">
+    <button onclick="clearAllEpisodes()" style="background:red; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">
+        모든 에피소드 삭제 (주의!)
+    </button>
+</div>
     </div>
 
     <script>
@@ -83,14 +91,51 @@
         let episodes = JSON.parse(localStorage.getItem("episodes")) || [];
 
         function renderList() {
-            const list = document.getElementById("episodeList");
-            list.innerHTML = "";
-            episodes.slice().reverse().forEach(ep => {
-                const li = document.createElement("li");
-                li.innerHTML = `<strong>${ep.date}</strong><br>${ep.text}`;
-                list.appendChild(li);
-            });
+    const list = document.getElementById("episodeList");
+    list.innerHTML = "";
+    episodes.slice().reverse().forEach((ep, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${ep.date}</strong><br>${ep.text}`;
+        
+        // 관리자 모드일 때만 버튼 추가
+        if (isAdmin) {
+            // 복사 버튼
+            const copyBtn = document.createElement("button");
+            copyBtn.textContent = "복사";
+            copyBtn.style.marginLeft = "10px";
+            copyBtn.style.padding = "4px 8px";
+            copyBtn.style.fontSize = "12px";
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(ep.text);
+                alert("에피소드 복사됐어요!");
+            };
+            li.appendChild(copyBtn);
+
+            // 삭제 버튼
+            const delBtn = document.createElement("button");
+            delBtn.textContent = "삭제";
+            delBtn.style.marginLeft = "5px";
+            delBtn.style.padding = "4px 8px";
+            delBtn.style.fontSize = "12px";
+            delBtn.style.background = "#ff4d4d";
+            delBtn.style.color = "white";
+            delBtn.style.border = "none";
+            delBtn.style.borderRadius = "4px";
+            delBtn.onclick = () => {
+                if (confirm("이 에피소드 정말 삭제할까요?")) {
+                    // reverse() 때문에 인덱스 조정 필요
+                    const realIndex = episodes.length - 1 - index;
+                    episodes.splice(realIndex, 1);
+                    localStorage.setItem("episodes", JSON.stringify(episodes));
+                    renderList();
+                }
+            };
+            li.appendChild(delBtn);
         }
+        
+        list.appendChild(li);
+    });
+}
 
         // 폼 제출
         document.getElementById("episodeForm").addEventListener("submit", function(e) {
@@ -118,6 +163,19 @@
 
         // 페이지 로드 시 실행
         window.onload = function() {
+            if (isAdmin) {
+    document.getElementById('adminControls').style.display = 'block';
+    // 목록 각 아이템에 복사/삭제 버튼 추가 (renderList 함수 안에 넣어야 함)
+}
+
+function clearAllEpisodes() {
+    if (confirm("정말 모든 에피소드를 지울까요? 복구 불가예요!")) {
+        localStorage.removeItem("episodes");
+        episodes = [];
+        renderList();
+        alert("모두 삭제됐어요.");
+    }
+}
             setRandomTheme();
             renderList();
         };
@@ -125,3 +183,4 @@
 </body>
 
 </html>
+
