@@ -20,6 +20,29 @@
         li { padding: 12px; background: #f8f8f8; margin: 8px 0; border-radius: 8px; border-left: 4px solid #1e3a8a; }
         .example-item { background: #f0f9ff; padding: 10px; margin: 8px 0; border-radius: 8px; }
     </style>
+<!-- Firebase SDK 추가 (Realtime Database용) -->
+<script type="module">
+  // 필요한 Firebase 기능들 불러오기
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+  // 여기에 네가 Firebase 콘솔에서 복사한 firebaseConfig 전체 붙여넣기
+const firebaseConfig = {
+  apiKey: "AIzaSyDa49Z0CeXJS4YjVkhhp1Qissnn57tGbEs",
+  authDomain: "bluebearepisodescollect.firebaseapp.com",
+  databaseURL: "https://bluebearepisodescollect-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "bluebearepisodescollect",
+  storageBucket: "bluebearepisodescollect.firebasestorage.app",
+  messagingSenderId: "783220074897",
+  appId: "1:783220074897:web:044242741babba63949230",
+  measurementId: "G-033FX9FVQH"
+};
+
+  // Firebase 초기화
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const episodesRef = ref(database, 'episodes');
+</script>
 </head>
 <body>
     <h1>🧸 블루베어 에피소드 수집소</h1>
@@ -183,4 +206,5 @@ function clearAllEpisodes() {
 </body>
 
 </html>
+
 
