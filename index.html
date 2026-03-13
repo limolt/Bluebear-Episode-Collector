@@ -112,9 +112,11 @@ function setRandomTheme() {
 }
 
 // 페이지 로드 완료 후 주제 설정 (여기서 호출)
-document.addEventListener('DOMContentLoaded', () => {
-  setRandomTheme();
-  console.log("주제 설정 시도: ", document.getElementById("todayTheme").textContent || "빈 칸");
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    setRandomTheme();
+    console.log("주제 설정 시도: ", document.getElementById("todayTheme").textContent || "빈 칸");
+  }, 100);  // 0.1초 늦춰서 실행
 });
 
 
@@ -196,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //list.appendChild(li);
   //});
 //}
+
 
 
 
