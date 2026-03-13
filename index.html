@@ -104,7 +104,7 @@ const themes = [
   "성장", "불평하기", "편의점야식", "특수능력", "유행", "좋아하는 영화"
 ];
 
-// 주제 바로 여기서 설정 (가장 확실한 방법)
+// 주제 바로 여기서 설정 (1초 기다린 후 실행)
 setTimeout(() => {
   const randomIndex = Math.floor(Math.random() * themes.length);
   const themeElement = document.getElementById("todayTheme");
@@ -114,8 +114,7 @@ setTimeout(() => {
   } else {
     console.log("todayTheme 못 찾음");
   }
-}, 1000);  // 1초 기다린 후 실행
-
+}, 1000);
 
         // Firebase에서 실시간으로 에피소드 불러오기 & 업데이트
 // onValue(episodesRef, (snapshot) => {
@@ -194,6 +193,7 @@ setTimeout(() => {
     //list.appendChild(li);
   //});
 //}
+
 
 
 
