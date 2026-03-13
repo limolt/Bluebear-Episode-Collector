@@ -94,24 +94,16 @@ const firebaseConfig = {
     </div>
 
     <script>
-// 주제 바로 실행 (1초 기다린 후)
-setTimeout(function() {
-  const themes = [
-    "습기", "비오는날", "맛집", "두쫀쿠", "불평", "습관", "커피", "편의점", "삼각김밥",
-    "새벽", "고향", "달", "손크기", "장비", "아이디어", "매너리즘", "AI영상", "소파",
-    "이불", "힘쓰기", "번쩍", "인간음식", "포장뜯기", "토해내기", "무거움", "축처짐",
-    "달두개", "컨셉회의", "야식", "커피숍", "영상편집", "창의력", "적대감", "먹고살기",
-    "190cm", "파란털", "다른별", "지구장비", "큰손발", "아이디어폭발", "소파넘어짐",
-    "성장", "불평하기", "편의점야식", "특수능력", "유행", "좋아하는 영화"
-  ];
-
-  const randomNumber = Math.floor(Math.random() * themes.length);
-  const themeBox = document.getElementById("todayTheme");
-
-  if (themeBox) {
-    themeBox.textContent = themes[randomNumber];
-    console.log("주제 성공: " + themes[randomNumber]);
+<script>
+  // 주제 바로 실행 (지연 없이 바로)
+  const themes = ["습기", "비오는날", "맛집", "커피", "새벽", "소파", "이불", "달두개"]; // 테스트용으로 줄여봄
+  const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+  const themeElement = document.getElementById("todayTheme");
+  if (themeElement) {
+    themeElement.textContent = randomTheme;
+    console.log("주제 강제 설정 성공: " + randomTheme);
   } else {
-    console.log("todayTheme 못 찾음");
+    console.log("todayTheme 요소 못 찾음");
   }
-}, 1000);
+</script>
+
