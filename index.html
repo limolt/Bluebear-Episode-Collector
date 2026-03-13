@@ -112,12 +112,17 @@ function setRandomTheme() {
 }
 
 // 페이지 로드 완료 후 주제 설정 (여기서 호출)
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    setRandomTheme();
-    console.log("주제 설정 시도: ", document.getElementById("todayTheme").textContent || "빈 칸");
-  }, 100);  // 0.1초 늦춰서 실행
-});
+// 주제 바로 여기서 설정 (가장 안전한 방법)
+setTimeout(() => {
+  const randomIndex = Math.floor(Math.random() * themes.length);
+  const themeElement = document.getElementById("todayTheme");
+  if (themeElement) {
+    themeElement.textContent = themes[randomIndex];
+    console.log("주제 설정 성공: " + themeElement.textContent);
+  } else {
+    console.log("todayTheme 못 찾음");
+  }
+}, 1000);  // 1초 기다린 후 실행
 
 
 
@@ -198,6 +203,7 @@ window.addEventListener('load', () => {
     //list.appendChild(li);
   //});
 //}
+
 
 
 
