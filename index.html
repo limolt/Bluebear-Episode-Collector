@@ -112,8 +112,7 @@ window.addEventListener('load', () => {
             document.getElementById("todayTheme").textContent = themes[randomIndex];
         }
 
-        // localStorage에서 에피소드 불러오기
-        let episodes = JSON.parse(localStorage.getItem("episodes")) || [];
+
 
         // Firebase에서 실시간으로 에피소드 불러오기 & 업데이트
 onValue(episodesRef, (snapshot) => {
@@ -149,14 +148,51 @@ function clearAllEpisodes() {
     alert("모두 삭제됐어요.");
   }
 }
+function renderList() {
+  const list = document.getElementById("episodeList");
+  list.innerHTML = "";
+  episodes.slice().reverse().forEach((ep, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<strong>${ep.date}</strong><br>${ep.text}`;
+    
+    if (isAdmin) {
+      const copyBtn = document.createElement("button");
+      copyBtn.textContent = "복사";
+      copyBtn.style.marginLeft = "10px";
+      copyBtn.style.padding = "4px 8px";
+      copyBtn.style.fontSize = "12px";
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(ep.text);
+        alert("복사됐어요!");
+      };
+      li.appendChild(copyBtn);
 
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "삭제";
+      delBtn.style.marginLeft = "5px";
+      delBtn.style.padding = "4px 8px";
+      delBtn.style.fontSize = "12px";
+      delBtn.style.background = "#ff4d4d";
+      delBtn.style.color = "white";
+      delBtn.style.border = "none";
+      delBtn.style.borderRadius = "4px";
+      delBtn.onclick = () => {
+        if (confirm("이 에피소드 삭제할까요?")) {
+          const realIndex = episodes.length - 1 - index;
+          episodes.splice(realIndex, 1);
+          // 임시로 localStorage에 저장 (Firebase 연동 완성 전까지 안전장치)
+          localStorage.setItem("episodes", JSON.stringify(episodes));
+          renderList();
+        }
+      };
+      li.appendChild(delBtn);
+    }
+    
+    list.appendChild(li);
+  });
+}
 // renderList 함수는 그대로 두되, episodes 배열이 Firebase에서 오는 걸로 바뀜
 // (기존 renderList 안에 있는 forEach 부분은 그대로 유지하면 돼)
 // 페이지 로드될 때 오늘의 주제 랜덤으로 설정 + 목록 렌더링
-window.addEventListener('load', () => {
-  setRandomTheme();
-  // renderList()는 onValue 안에서 이미 자동 호출되니까 여기선 생략해도 OK
-  // 하지만 안전하게 한 번 더 호출해도 문제 없음
-  renderList();
-});
+
 
