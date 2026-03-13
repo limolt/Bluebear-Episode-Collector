@@ -130,22 +130,53 @@ const randomTheme = themes[Math.floor(Math.random() * themes.length)];
             });
         });
 
-        // 4. 리스트 실시간 업데이트
-        onValue(episodesRef, (snapshot) => {
-            const list = document.getElementById('episodeList');
-            list.innerHTML = "";
-            const data = snapshot.val();
-            if (data) {
-                Object.values(data).reverse().forEach(item => {
-                    const li = document.createElement('li');
-                    li.textContent = `[${item.theme}] ${item.content}`;
-                    list.appendChild(li);
-                });
+// 4. 리스트 실시간 업데이트 (개별 삭제 버튼 추가)
+onValue(episodesRef, (snapshot) => {
+    const list = document.getElementById('episodeList');
+    list.innerHTML = "";  // 기존 목록 지우기
+
+    const data = snapshot.val();
+    if (data) {
+        // 데이터를 배열로 바꾸고 최신순으로 뒤집기
+        const episodesArray = Object.entries(data).map(([id, item]) => ({ id, ...item }));
+        episodesArray.reverse();  // 최신이 위로 오게
+
+        episodesArray.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = `[${item.theme || '주제없음'}] ${item.content}`;
+
+            // 관리자 모드일 때만 삭제 버튼 추가
+            if (isAdmin) {
+                const delBtn = document.createElement('button');
+                delBtn.textContent = '삭제';
+                delBtn.style.marginLeft = '10px';
+                delBtn.style.background = '#ff4d4d';
+                delBtn.style.color = 'white';
+                delBtn.style.border = 'none';
+                delBtn.style.padding = '4px 8px';
+                delBtn.style.borderRadius = '4px';
+                delBtn.style.cursor = 'pointer';
+                delBtn.style.fontSize = '12px';
+
+                delBtn.onclick = () => {
+                    if (confirm('이 에피소드 정말 삭제할까요?')) {
+                        remove(ref(database, `episodes/${item.id}`))
+                            .then(() => console.log('삭제 완료'))
+                            .catch(err => console.error('삭제 실패:', err));
+                    }
+                };
+
+                li.appendChild(delBtn);
             }
+
+            list.appendChild(li);
         });
+    }
+});
     </script>
 </body>
 </html>
+
 
 
 
